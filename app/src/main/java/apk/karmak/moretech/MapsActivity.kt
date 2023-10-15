@@ -1,8 +1,12 @@
 package apk.karmak.moretech
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.view.marginStart
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
@@ -22,11 +26,8 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
 
     private val placemarkTapListener = MapObjectTapListener { _, point ->
-        Toast.makeText(
-            this,
-            "Tapped the point (${point.longitude}, ${point.latitude})",
-            Toast.LENGTH_SHORT
-        ).show()
+        startActivity(
+            Intent(this, InfoActivity::class.java))
         true
     }
 
@@ -55,6 +56,30 @@ class MapsActivity : AppCompatActivity() {
             mapView.map.mapObjects.addPlacemark().apply {
                 geometry = Point(one.latitude, one.longitude)
                 setIcon(imageProvider)
+            }.addTapListener(placemarkTapListener)
+        }
+
+
+
+        var state: Boolean = false
+
+        val bg: ImageView = findViewById(R.id.bg)
+
+        val param = bg.layoutParams as ViewGroup.MarginLayoutParams
+        param.setMargins(-280, 0, 0, 100)
+        bg.layoutParams = param
+
+        bg.setOnClickListener {
+            if(state){
+                val param = bg.layoutParams as ViewGroup.MarginLayoutParams
+                param.setMargins(-280, 0, 0, 100)
+                bg.layoutParams = param
+                state=false
+            }else {
+                val param = bg.layoutParams as ViewGroup.MarginLayoutParams
+                param.setMargins(0, 0, 0, 100)
+                bg.layoutParams = param
+                state=true
             }
         }
 
@@ -62,12 +87,11 @@ class MapsActivity : AppCompatActivity() {
 
 
 
-
-        val placemark = mapView.map.mapObjects.addPlacemark().apply {
-            geometry = Point(59.935493, 30.327392)
-            setIcon(imageProvider)
-        }
-        placemark.addTapListener(placemarkTapListener)
+//        val placemark = mapView.map.mapObjects.addPlacemark().apply {
+//            geometry = Point(59.935493, 30.327392)
+//            setIcon(imageProvider)
+//        }
+//        placemark.addTapListener(placemarkTapListener)
 
 
     }
